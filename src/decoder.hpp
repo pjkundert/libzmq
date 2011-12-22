@@ -1,5 +1,6 @@
 /*
-    Copyright (c) 2007-2011 iMatix Corporation
+    Copyright (c) 2009-2011 250bpm s.r.o.
+    Copyright (c) 2007-2009 iMatix Corporation
     Copyright (c) 2007-2011 Other contributors as noted in the AUTHORS file
 
     This file is part of 0MQ.
@@ -32,6 +33,8 @@
 
 namespace zmq
 {
+
+    class session_base_t;
 
     //  Helper base class for decoders that know the amount of data to read
     //  in advance at any moment. Knowing the amount in advance is a property
@@ -192,7 +195,7 @@ namespace zmq
         decoder_t (size_t bufsize_, int64_t maxmsgsize_);
         ~decoder_t ();
 
-        void set_session (class session_base_t *session_);
+        void set_session (zmq::session_base_t *session_);
 
     private:
 
@@ -201,7 +204,7 @@ namespace zmq
         bool flags_ready ();
         bool message_ready ();
 
-        class session_base_t *session;
+        zmq::session_base_t *session;
         unsigned char tmpbuf [8];
         msg_t in_progress;
 

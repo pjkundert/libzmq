@@ -3,7 +3,7 @@ MAN3 = zmq_bind.3 zmq_close.3 zmq_connect.3 zmq_init.3 \
     zmq_msg_init_data.3 zmq_msg_init_size.3 zmq_msg_move.3 zmq_msg_size.3 \
     zmq_poll.3 zmq_recv.3 zmq_send.3 zmq_setsockopt.3 zmq_socket.3 \
     zmq_strerror.3 zmq_term.3 zmq_version.3 zmq_getsockopt.3 zmq_errno.3 \
-    zmq_sendmsg.3 zmq_recvmsg.3
+    zmq_sendmsg.3 zmq_recvmsg.3 zmq_getmsgopt.3
 MAN7 = zmq.7 zmq_tcp.7 zmq_pgm.7 zmq_epgm.7 zmq_inproc.7 zmq_ipc.7
 
 MAN_DOC = $(MAN1) $(MAN3) $(MAN7)
@@ -29,11 +29,11 @@ if BUILD_DOC
 SUFFIXES=.html .txt .xml .3 .7
 
 .txt.html:
-	asciidoc -d manpage -b xhtml11 -f asciidoc.conf \
-		-azmq_version=@PACKAGE_VERSION@ $<
+	asciidoc -d manpage -b xhtml11 -f $(srcdir)/asciidoc.conf \
+		-azmq_version=@PACKAGE_VERSION@ -o$@ $<
 .txt.xml:
-	asciidoc -d manpage -b docbook -f asciidoc.conf \
-		-azmq_version=@PACKAGE_VERSION@ $<
+	asciidoc -d manpage -b docbook -f $(srcdir)/asciidoc.conf \
+		-azmq_version=@PACKAGE_VERSION@ -o$@ $<
 .xml.1:
 	xmlto man $<
 .xml.3:

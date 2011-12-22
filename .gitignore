@@ -1,3 +1,4 @@
+syntax: glob # for hg-git users
 Makefile
 Makefile.in
 configure
@@ -32,6 +33,7 @@ tests/test_reqrep_device
 tests/test_reqrep_drop
 tests/test_sub_forward
 tests/test_invalid_rep
+tests/test_msg_flags
 src/platform.hpp*
 src/stamp-h1
 perf/local_lat
@@ -48,6 +50,7 @@ doc/*.xml
 src/libzmq.pc
 bin/
 lib/
+obj/
 builds/msvc/*.suo
 builds/msvc/*/*.user
 builds/msvc/*/Debug

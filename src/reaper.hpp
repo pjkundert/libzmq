@@ -1,6 +1,6 @@
 /*
-    Copyright (c) 2007-2011 iMatix Corporation
-    Copyright (c) 2007-2011 Other contributors as noted in the AUTHORS file
+    Copyright (c) 2011 250bpm s.r.o.
+    Copyright (c) 2011 Other contributors as noted in the AUTHORS file
 
     This file is part of 0MQ.
 
@@ -29,11 +29,14 @@
 namespace zmq
 {
 
+    class ctx_t;
+    class socket_base_t;
+
     class reaper_t : public object_t, public i_poll_events
     {
     public:
 
-        reaper_t (class ctx_t *ctx_, uint32_t tid_);
+        reaper_t (zmq::ctx_t *ctx_, uint32_t tid_);
         ~reaper_t ();
 
         mailbox_t *get_mailbox ();
@@ -50,7 +53,7 @@ namespace zmq
 
         //  Command handlers.
         void process_stop ();
-        void process_reap (class socket_base_t *socket_);
+        void process_reap (zmq::socket_base_t *socket_);
         void process_reaped ();
 
         //  Reaper thread accesses incoming commands via this mailbox.

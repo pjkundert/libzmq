@@ -1,5 +1,6 @@
 /*
-    Copyright (c) 2007-2011 iMatix Corporation
+    Copyright (c) 2009-2011 250bpm s.r.o.
+    Copyright (c) 2007-2009 iMatix Corporation
     Copyright (c) 2007-2011 Other contributors as noted in the AUTHORS file
 
     This file is part of 0MQ.
@@ -31,6 +32,8 @@
 
 namespace zmq
 {
+
+    class session_base_t;
 
     //  Helper base class for encoders. It implements the state machine that
     //  fills the outgoing buffer. Derived classes should implement individual
@@ -172,14 +175,14 @@ namespace zmq
         encoder_t (size_t bufsize_);
         ~encoder_t ();
 
-        void set_session (class session_base_t *session_);
+        void set_session (zmq::session_base_t *session_);
 
     private:
 
         bool size_ready ();
         bool message_ready ();
 
-        class session_base_t *session;
+        zmq::session_base_t *session;
         msg_t in_progress;
         unsigned char tmpbuf [10];
 

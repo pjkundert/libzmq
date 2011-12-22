@@ -1,5 +1,6 @@
 /*
-    Copyright (c) 2007-2011 iMatix Corporation
+    Copyright (c) 2010-2011 250bpm s.r.o.
+    Copyright (c) 2007-2009 iMatix Corporation
     Copyright (c) 2007-2011 Other contributors as noted in the AUTHORS file
 
     This file is part of 0MQ.
@@ -47,7 +48,7 @@ namespace zmq
     private:
 
         //  List of outbound pipes.
-        typedef array_t <class pipe_t, 2> pipes_t;
+        typedef array_t <pipe_t, 2> pipes_t;
         pipes_t pipes;
 
         //  Number of active pipes. All the active pipes are located at the

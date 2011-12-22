@@ -1,5 +1,6 @@
 /*
-    Copyright (c) 2007-2011 iMatix Corporation
+    Copyright (c) 2009-2011 250bpm s.r.o.
+    Copyright (c) 2007-2009 iMatix Corporation
     Copyright (c) 2007-2011 Other contributors as noted in the AUTHORS file
 
     This file is part of 0MQ.
@@ -26,12 +27,18 @@
 namespace zmq
 {
 
+    class object_t;
+    class own_t;
+    struct i_engine;
+    class pipe_t;
+    class socket_base_t;
+
     //  This structure defines the commands that can be sent between threads.
 
     struct command_t
     {
         //  Object to process the command.
-        class object_t *destination;
+        zmq::object_t *destination;
 
         enum type_t
         {
@@ -66,7 +73,7 @@ namespace zmq
 
             //  Sent to socket to let it know about the newly created object.
             struct {
-                class own_t *object;
+                zmq::own_t *object;
             } own;
 
             //  Attach the engine to the session. If engine is NULL, it informs
@@ -78,7 +85,7 @@ namespace zmq
             //  Sent from session to socket to establish pipe(s) between them.
             //  Caller have used inc_seqnum beforehand sending the command.
             struct {
-                class pipe_t *pipe;
+                zmq::pipe_t *pipe;
             } bind;
 
             //  Sent by pipe writer to inform dormant pipe reader that there
@@ -111,7 +118,7 @@ namespace zmq
             //  Sent by I/O object ot the socket to request the shutdown of
             //  the I/O object.
             struct {
-                class own_t *object;
+                zmq::own_t *object;
             } term_req;
 
             //  Sent by socket to I/O object to start its shutdown.
@@ -127,7 +134,7 @@ namespace zmq
             //  Transfers the ownership of the closed socket
             //  to the reaper thread.
             struct {
-                class socket_base_t *socket;
+                zmq::socket_base_t *socket;
             } reap;
 
             //  Closed socket notifies the reaper that it's already deallocated.

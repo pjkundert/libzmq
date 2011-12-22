@@ -1,6 +1,6 @@
 /*
-    Copyright (c) 2007-2011 iMatix Corporation
-    Copyright (c) 2007-2011 Other contributors as noted in the AUTHORS file
+    Copyright (c) 2010-2011 250bpm s.r.o.
+    Copyright (c) 2010-2011 Other contributors as noted in the AUTHORS file
 
     This file is part of 0MQ.
 
@@ -29,6 +29,8 @@
 namespace zmq
 {
 
+    struct i_poll_events;
+
     class poller_base_t
     {
     public:
@@ -43,10 +45,10 @@ namespace zmq
         //  Add a timeout to expire in timeout_ milliseconds. After the
         //  expiration timer_event on sink_ object will be called with
         //  argument set to id_.
-        void add_timer (int timeout_, struct i_poll_events *sink_, int id_);
+        void add_timer (int timeout_, zmq::i_poll_events *sink_, int id_);
 
         //  Cancel the timer created by sink_ object with ID equal to id_.
-        void cancel_timer (struct i_poll_events *sink_, int id_);
+        void cancel_timer (zmq::i_poll_events *sink_, int id_);
 
     protected:
 
@@ -65,7 +67,7 @@ namespace zmq
         //  List of active timers.
         struct timer_info_t
         {
-            struct i_poll_events *sink;
+            zmq::i_poll_events *sink;
             int id;
         };
         typedef std::multimap <uint64_t, timer_info_t> timers_t;

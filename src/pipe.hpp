@@ -1,5 +1,7 @@
 /*
-    Copyright (c) 2007-2011 iMatix Corporation
+    Copyright (c) 2009-2011 250bpm s.r.o.
+    Copyright (c) 2007-2009 iMatix Corporation
+    Copyright (c) 2011 VMware, Inc.
     Copyright (c) 2007-2011 Other contributors as noted in the AUTHORS file
 
     This file is part of 0MQ.
@@ -27,9 +29,13 @@
 #include "object.hpp"
 #include "stdint.hpp"
 #include "array.hpp"
+#include "blob.hpp"
 
 namespace zmq
 {
+
+    class object_t;
+    class pipe_t;
 
     //  Create a pipepair for bi-directional transfer of messages.
     //  First HWM is for messages passed from first pipe to the second pipe.
@@ -37,17 +43,17 @@ namespace zmq
     //  Delay specifies how the pipe behaves when the peer terminates. If true
     //  pipe receives all the pending messages before terminating, otherwise it
     //  terminates straight away.
-    int pipepair (class object_t *parents_ [2], class pipe_t* pipes_ [2],
+    int pipepair (zmq::object_t *parents_ [2], zmq::pipe_t* pipes_ [2],
         int hwms_ [2], bool delays_ [2]);
 
     struct i_pipe_events
     {
         virtual ~i_pipe_events () {}
 
-        virtual void read_activated (class pipe_t *pipe_) = 0;
-        virtual void write_activated (class pipe_t *pipe_) = 0;
-        virtual void hiccuped (class pipe_t *pipe_) = 0;
-        virtual void terminated (class pipe_t *pipe_) = 0;
+        virtual void read_activated (zmq::pipe_t *pipe_) = 0;
+        virtual void write_activated (zmq::pipe_t *pipe_) = 0;
+        virtual void hiccuped (zmq::pipe_t *pipe_) = 0;
+        virtual void terminated (zmq::pipe_t *pipe_) = 0;
     };
 
     //  Note that pipe can be stored in three different arrays.
@@ -61,8 +67,8 @@ namespace zmq
         public array_item_t <3>
     {
         //  This allows pipepair to create pipe objects.
-        friend int pipepair (class object_t *parents_ [2],
-            class pipe_t* pipes_ [2], int hwms_ [2], bool delays_ [2]);
+        friend int pipepair (zmq::object_t *parents_ [2],
+            zmq::pipe_t* pipes_ [2], int hwms_ [2], bool delays_ [2]);
 
     public:
 
@@ -70,8 +76,8 @@ namespace zmq
         void set_event_sink (i_pipe_events *sink_);
 
         //  Pipe endpoint can store an opaque ID to be used by its clients.
-        void set_pipe_id (uint32_t id_);
-        uint32_t get_pipe_id ();
+        void set_identity (const blob_t &identity_);
+        blob_t get_identity ();
 
         //  Returns true if there is at least one message to read in the pipe.
         bool check_read ();
@@ -182,8 +188,8 @@ namespace zmq
         //  asks us to.
         bool delay;
 
-        //  Opaque ID. To be used by the clients, not the pipe itself.
-        uint32_t pipe_id;
+        //  Identity of the writer. Used uniquely by the reader side.
+        blob_t identity;
 
         //  Returns true if the message is delimiter; false otherwise.
         static bool is_delimiter (msg_t &msg_);

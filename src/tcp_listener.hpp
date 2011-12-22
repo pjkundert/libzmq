@@ -1,5 +1,6 @@
 /*
-    Copyright (c) 2007-2011 iMatix Corporation
+    Copyright (c) 2009-2011 250bpm s.r.o.
+    Copyright (c) 2007-2010 iMatix Corporation
     Copyright (c) 2007-2011 Other contributors as noted in the AUTHORS file
 
     This file is part of 0MQ.
@@ -30,12 +31,15 @@
 namespace zmq
 {
 
+    class io_thread_t;
+    class socket_base_t;
+
     class tcp_listener_t : public own_t, public io_object_t
     {
     public:
 
-        tcp_listener_t (class io_thread_t *io_thread_,
-            class socket_base_t *socket_, const options_t &options_);
+        tcp_listener_t (zmq::io_thread_t *io_thread_,
+            zmq::socket_base_t *socket_, const options_t &options_);
         ~tcp_listener_t ();
 
         //  Set address to listen on.
@@ -71,7 +75,7 @@ namespace zmq
         handle_t handle;
 
         //  Socket the listerner belongs to.
-        class socket_base_t *socket;
+        zmq::socket_base_t *socket;
 
         tcp_listener_t (const tcp_listener_t&);
         const tcp_listener_t &operator = (const tcp_listener_t&);

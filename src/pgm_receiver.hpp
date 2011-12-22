@@ -1,5 +1,7 @@
 /*
-    Copyright (c) 2007-2011 iMatix Corporation
+    Copyright (c) 2009-2011 250bpm s.r.o.
+    Copyright (c) 2007-2009 iMatix Corporation
+    Copyright (c) 2010-2011 Miru Limited
     Copyright (c) 2007-2011 Other contributors as noted in the AUTHORS file
 
     This file is part of 0MQ.
@@ -41,19 +43,22 @@
 namespace zmq
 {
 
+    class io_thread_t;
+    class session_base_t;
+
     class pgm_receiver_t : public io_object_t, public i_engine
     {
     
     public:
 
-        pgm_receiver_t (class io_thread_t *parent_, const options_t &options_);
+        pgm_receiver_t (zmq::io_thread_t *parent_, const options_t &options_);
         ~pgm_receiver_t ();
 
         int init (bool udp_encapsulation_, const char *network_);
 
         //  i_engine interface implementation.
-        void plug (class io_thread_t *io_thread_,
-            class session_base_t *session_);
+        void plug (zmq::io_thread_t *io_thread_,
+            zmq::session_base_t *session_);
         void unplug ();
         void terminate ();
         void activate_in ();
@@ -106,7 +111,7 @@ namespace zmq
         options_t options;
 
         //  Associated session.
-        class session_base_t *session;
+        zmq::session_base_t *session;
 
         //  Most recently used decoder.
         decoder_t *mru_decoder;

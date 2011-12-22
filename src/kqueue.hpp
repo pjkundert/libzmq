@@ -1,5 +1,6 @@
 /*
-    Copyright (c) 2007-2011 iMatix Corporation
+    Copyright (c) 2009-2011 250bpm s.r.o.
+    Copyright (c) 2007-2009 iMatix Corporation
     Copyright (c) 2007-2011 Other contributors as noted in the AUTHORS file
 
     This file is part of 0MQ.
@@ -34,6 +35,8 @@
 namespace zmq
 {
 
+    struct i_poll_events;
+
     //  Implements socket polling mechanism using the BSD-specific
     //  kqueue interface.
 
@@ -47,7 +50,7 @@ namespace zmq
         ~kqueue_t ();
 
         //  "poller" concept.
-        handle_t add_fd (fd_t fd_, struct i_poll_events *events_);
+        handle_t add_fd (fd_t fd_, zmq::i_poll_events *events_);
         void rm_fd (handle_t handle_);
         void set_pollin (handle_t handle_);
         void reset_pollin (handle_t handle_);
@@ -78,7 +81,7 @@ namespace zmq
             fd_t fd;
             bool flag_pollin;
             bool flag_pollout;
-            i_poll_events *reactor;
+            zmq::i_poll_events *reactor;
         };
 
         //  List of retired event sources.

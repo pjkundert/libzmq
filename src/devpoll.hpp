@@ -1,5 +1,6 @@
 /*
-    Copyright (c) 2007-2011 iMatix Corporation
+    Copyright (c) 2009-2011 250bpm s.r.o.
+    Copyright (c) 2007-2009 iMatix Corporation
     Copyright (c) 2007-2011 Other contributors as noted in the AUTHORS file
 
     This file is part of 0MQ.
@@ -34,6 +35,8 @@
 namespace zmq
 {
 
+    struct i_poll_events;
+
     //  Implements socket polling mechanism using the "/dev/poll" interface.
 
     class devpoll_t : public poller_base_t
@@ -46,7 +49,7 @@ namespace zmq
         ~devpoll_t ();
 
         //  "poller" concept.
-        handle_t add_fd (fd_t fd_, struct i_poll_events *events_);
+        handle_t add_fd (fd_t fd_, zmq::i_poll_events *events_);
         void rm_fd (handle_t handle_);
         void set_pollin (handle_t handle_);
         void reset_pollin (handle_t handle_);
@@ -69,7 +72,7 @@ namespace zmq
         struct fd_entry_t
         {
             short events;
-            struct i_poll_events *reactor;
+            zmq::i_poll_events *reactor;
             bool valid;
             bool accepted;
         };

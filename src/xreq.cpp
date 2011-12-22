@@ -1,5 +1,6 @@
 /*
-    Copyright (c) 2007-2011 iMatix Corporation
+    Copyright (c) 2009-2011 250bpm s.r.o.
+    Copyright (c) 2011 VMware, Inc.
     Copyright (c) 2007-2011 Other contributors as noted in the AUTHORS file
 
     This file is part of 0MQ.
@@ -23,17 +24,26 @@
 #include "msg.hpp"
 
 zmq::xreq_t::xreq_t (class ctx_t *parent_, uint32_t tid_) :
-    socket_base_t (parent_, tid_)
+    socket_base_t (parent_, tid_),
+    prefetched (false)
 {
     options.type = ZMQ_XREQ;
 
+    //  TODO: Uncomment the following line when XREQ will become true XREQ
+    //  rather than generic dealer socket.
     //  If the socket is closing we can drop all the outbound requests. There'll
     //  be noone to receive the replies anyway.
-    options.delay_on_close = false;
+    //  options.delay_on_close = false;
+
+    options.send_identity = true;
+    options.recv_identity = true;
+
+    prefetched_msg.init ();
 }
 
 zmq::xreq_t::~xreq_t ()
 {
+    prefetched_msg.close ();
 }
 
 void zmq::xreq_t::xattach_pipe (pipe_t *pipe_)
@@ -50,12 +60,38 @@ int zmq::xreq_t::xsend (msg_t *msg_, int flags_)
 
 int zmq::xreq_t::xrecv (msg_t *msg_, int flags_)
 {
-    return fq.recv (msg_, flags_);
+    //  If there is a prefetched message, return it.
+    if (prefetched) {
+        int rc = msg_->move (prefetched_msg);
+        errno_assert (rc == 0);
+        prefetched = false;
+        return 0;
+    }
+
+    //  XREQ socket doesn't use identities. We can safely drop it and 
+    while (true) {
+        int rc = fq.recv (msg_, flags_);
+        if (rc != 0)
+            return rc;
+        if (likely (!(msg_->flags () & msg_t::identity)))
+            break;
+    }
+    return 0;
 }
 
 bool zmq::xreq_t::xhas_in ()
 {
-    return fq.has_in ();
+    //  We may already have a message pre-fetched.
+    if (prefetched)
+        return true;
+
+    //  Try to read the next message to the pre-fetch buffer.
+    int rc = xreq_t::xrecv (&prefetched_msg, ZMQ_DONTWAIT);
+    if (rc != 0 && errno == EAGAIN)
+        return false;
+    zmq_assert (rc == 0);
+    prefetched = true;
+    return true;
 }
 
 bool zmq::xreq_t::xhas_out ()

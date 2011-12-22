@@ -1,5 +1,7 @@
 /*
-    Copyright (c) 2007-2011 iMatix Corporation
+    Copyright (c) 2009-2011 250bpm s.r.o.
+    Copyright (c) 2007-2009 iMatix Corporation
+    Copyright (c) 2011 VMware, Inc.
     Copyright (c) 2007-2011 Other contributors as noted in the AUTHORS file
 
     This file is part of 0MQ.
@@ -27,16 +29,21 @@
 namespace zmq
 {
 
+    class ctx_t;
+    class msg_t;
+    class io_thread_t;
+    class socket_base_t;
+
     class req_t : public xreq_t
     {
     public:
 
-        req_t (class ctx_t *parent_, uint32_t tid_);
+        req_t (zmq::ctx_t *parent_, uint32_t tid_);
         ~req_t ();
 
         //  Overloads of functions from socket_base_t.
-        int xsend (class msg_t *msg_, int flags_);
-        int xrecv (class msg_t *msg_, int flags_);
+        int xsend (zmq::msg_t *msg_, int flags_);
+        int xrecv (zmq::msg_t *msg_, int flags_);
         bool xhas_in ();
         bool xhas_out ();
 
@@ -50,10 +57,6 @@ namespace zmq
         //  of the message must be empty message part (backtrace stack bottom).
         bool message_begins;
 
-        //  Request ID. Request numbers gradually increase (and wrap over)
-        //  so that we don't have to generate random ID for each request.
-        uint32_t request_id;
-
         req_t (const req_t&);
         const req_t &operator = (const req_t&);
     };
@@ -62,8 +65,8 @@ namespace zmq
     {
     public:
 
-        req_session_t (class io_thread_t *io_thread_, bool connect_,
-            class socket_base_t *socket_, const options_t &options_,
+        req_session_t (zmq::io_thread_t *io_thread_, bool connect_,
+            zmq::socket_base_t *socket_, const options_t &options_,
             const char *protocol_, const char *address_);
         ~req_session_t ();
 
@@ -73,7 +76,8 @@ namespace zmq
     private:
 
         enum {
-            request_id,
+            identity,
+            bottom,
             body
         } state;
 
